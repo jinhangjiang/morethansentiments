@@ -1,4 +1,4 @@
-from setuptools import setup, find_package
+from setuptools import setup, find_packages
 
 # with open("README.md", "r") as f:
 #     long_description = f.read()
@@ -6,11 +6,11 @@ from setuptools import setup, find_package
     
 setup(
     name = 'morethansentiments',
-    version = '0.0.1',
+    version = '0.1.0',
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
 #     py_modules = ["morethansentiments"],
-#     package_dir = {'':'src'},
-    package = find_packages(),
+    package_dir = {'':'src'},
+    package = find_packages(exclude=("test",)),
     author = 'Jinhang Jiang, Karthik Srinivasan',
     author_email = 'jinhang@asu.edu, karthiks@ku.edu',
     long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
