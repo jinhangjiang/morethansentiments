@@ -6,6 +6,7 @@ To be added:
     1. Specificity: GPT-3 NER
     2. Readability Index: 4 ways + average option
     3. Topic Embeddings
+    4. Relative_prevalence: add NER for money value
 '''
 
 from collections import defaultdict
@@ -26,6 +27,8 @@ warnings.filterwarnings("ignore")
 
 def test_func():
     return ("Lib is ready")
+
+
 
 def read_txt_files(PATH:str):
     
@@ -215,7 +218,22 @@ def Specificity(data: pd.Series):
 
 def Relative_prevalence(data:pd.Series):
     
+    ''' (Blankespoor, 2016)
+    # relative prevalence of informative numbers in the text or “hard” information 
+    '''
+    
     #[CHECKHERE, Money and Number entities are not included]
+    
+#     nlp = spacy.load("en_core_web_md", disable = ["tagger","parser"])
+
+#     df = pd.DataFrame({"Text":["this is a text about Germany","this is another about Trump"]})
+
+#     texts = df["Text"].to_list()
+#     ents = []
+#     for doc in nlp.pipe(texts):
+#         for ent in doc.ents:
+#             if ent.label_ == "GPE":
+#                 ents.append(ent)
     
     relative_prevalence = [0]*len(data)
     
