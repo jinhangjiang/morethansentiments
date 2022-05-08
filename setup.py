@@ -6,16 +6,17 @@ from setuptools import setup, find_packages
     
 setup(
     name = 'MoreThanSentiments',
-    version = '0.1.0',
+    version = '0.1.1',
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
 #     py_modules = ["morethansentiments"],
-    package_dir = {'':'src'},
+#    package_dir = {'':'src'},
     package = find_packages(exclude=("test", "Data",)),
     author = 'Jinhang Jiang, Karthik Srinivasan',
     author_email = 'jinhang@asu.edu, karthiks@ku.edu',
     long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
     long_description_content_type = "text/markdown",
     url='https://github.com/jinhangjiang/morethansentiments',
+    include_package_data=True,
     
     
     classiffiers = [
