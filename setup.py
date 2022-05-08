@@ -5,12 +5,12 @@ from setuptools import setup, find_packages
 
     
 setup(
-    name = 'morethansentiments',
+    name = 'MoreThanSentiments',
     version = '0.1.0',
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
 #     py_modules = ["morethansentiments"],
     package_dir = {'':'src'},
-    package = find_packages(exclude=("test",)),
+    package = find_packages(exclude=("test", "Data",)),
     author = 'Jinhang Jiang, Karthik Srinivasan',
     author_email = 'jinhang@asu.edu, karthiks@ku.edu',
     long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
