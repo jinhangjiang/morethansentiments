@@ -1,8 +1,5 @@
 from setuptools import setup
 
-# with open("README.md", "r") as f:
-#     long_description = f.read()
-
 
 
 setup(
@@ -11,7 +8,7 @@ setup(
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
     py_modules = ["MoreThanSentiments"],
     package_dir = {'':'src'},
-#     package = ['morethansentiments'],
+#     package = ['MoreThanSentiments'],
     author = 'Jinhang Jiang, Karthik Srinivasan',
     author_email = 'jinhang@asu.edu',
     long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
