@@ -1,4 +1,5 @@
 import pandas as pd
+from IPython.display import display
 import morethansentiments as mts
 my_dir_path = "E:/Package/Boilerplate/morethansentiments/Data/bbc/business"
 df = mts.read_txt_files(PATH = my_dir_path)
