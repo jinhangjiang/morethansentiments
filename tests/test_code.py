@@ -21,4 +21,4 @@ df['Redundancy'] = mts.Redundancy(df.cleaned_data, n = 10)
 df['Specificity'] = mts.Specificity(df.text)
 df['Relative_prevalence'] = mts.Relative_prevalence(df.text)
 
-df.head(3)
+display(df.head(3))
