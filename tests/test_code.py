@@ -2,7 +2,6 @@ import pandas as pd
 import morethansentiments as mts
 my_dir_path = "E:/Package/Boilerplate/morethansentiments/Data/bbc/business"
 df = mts.read_txt_files(PATH = my_dir_path)
-display(df)
 
 
 
@@ -21,3 +20,5 @@ df['Boilerplate'] = mts.Boilerplate(df.cleaned_data, n = 4, min_doc = 5)
 df['Redundancy'] = mts.Redundancy(df.cleaned_data, n = 10)
 df['Specificity'] = mts.Specificity(df.text)
 df['Relative_prevalence'] = mts.Relative_prevalence(df.text)
+
+df.head(3)

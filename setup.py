@@ -1,18 +1,19 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 # with open("README.md", "r") as f:
 #     long_description = f.read()
 
-    
+
+
 setup(
     name = 'MoreThanSentiments',
-    version = '0.1.1',
+    version = '0.1.2',
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
-#     py_modules = ["morethansentiments"],
-#    package_dir = {'':'src'},
-    package = find_packages(exclude=("test", "Data",)),
+    py_modules = ["MoreThanSentiments"],
+    package_dir = {'':'src'},
+#     package = ['morethansentiments'],
     author = 'Jinhang Jiang, Karthik Srinivasan',
-    author_email = 'jinhang@asu.edu, karthiks@ku.edu',
+    author_email = 'jinhang@asu.edu',
     long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
     long_description_content_type = "text/markdown",
     url='https://github.com/jinhangjiang/morethansentiments',
@@ -32,7 +33,8 @@ setup(
         'Intended Audience :: Science/Research',
         'Intended Audience :: Education',
         'Topic :: Text Processing',
-        'Operating System :: Microsoft :: Windows'      
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: OS Independent',
     ],
     
     install_requires = [

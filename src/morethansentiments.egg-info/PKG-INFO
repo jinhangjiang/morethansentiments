@@ -1,10 +1,10 @@
 Metadata-Version: 2.1
 Name: MoreThanSentiments
-Version: 0.1.0
+Version: 0.1.2
 Summary: An NLP python package for computing Boilerplate score and many other text features.
 Home-page: https://github.com/jinhangjiang/morethansentiments
 Author: Jinhang Jiang, Karthik Srinivasan
-Author-email: jinhang@asu.edu, karthiks@ku.edu
+Author-email: jinhang@asu.edu
 License: UNKNOWN
 Description: # MoreThanSentiments
         Besides sentiment scores, this Python package offers various ways of quantifying text corpus based on multiple works of literature, such as Boilerplate (Lang and Stice-Lawrence, 2015).
@@ -14,7 +14,7 @@ Description: # MoreThanSentiments
         The easiest way to install the toolbox is via pip (pip3 in some
         distributions):
         
-            pip install morethansentiments
+            pip install MoreThanSentiments
             
         
         ## Usage
@@ -24,7 +24,7 @@ Description: # MoreThanSentiments
         
         # CHANGELOG
         
-        ## Version 0.0.1, 2022-05-08
+        ## Version 0.1.2, 2022-05-08
         
         - Initial release.
         
