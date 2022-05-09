@@ -6,7 +6,7 @@ Besides sentiment scores, this Python package offers various ways of quantifying
 The easiest way to install the toolbox is via pip (pip3 in some
 distributions):
 
-    pip install morethansentiments
+    pip install MoreThanSentiments
     
 
 ## Usage
