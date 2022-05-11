@@ -18,7 +18,7 @@ distributions):
 
 #### Import the Package
 
-    import morethansentiments as mts
+    import MoreThanSentiments as mts
     
 #### Read data from txt files
 
