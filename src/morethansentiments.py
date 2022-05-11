@@ -43,8 +43,8 @@ def read_txt_files(PATH:str):
     return df
 
 
-def clean_data(doc:str, lower=True, punctuations=None, number=None,
-               unicode=None, stop_words:str=None):
+def clean_data(doc:str, lower=True, punctuations=False, number=False,
+               unicode=False, stop_words:str=False):
     if lower == True:
         doc = doc.lower() #convert all the letters to lower
         
@@ -57,7 +57,7 @@ def clean_data(doc:str, lower=True, punctuations=None, number=None,
     if unicode == True:
         doc = doc.encode('ascii', 'ignore').decode("utf-8")  #remove unicode
         
-    if stop_words != None:
+    if stop_words == True:
         nltk.download('stopwords')
         stop = stopwords.words(stop_words)
         doc = doc.apply(lambda x: ' '.join(x for x in x.split() if x not in stop)) #remove stop words
@@ -155,7 +155,7 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: int = 5):
 
 
 
-def Redundancy(cleaned_data: pd.Series, n: int = 10):
+def Redundancy(input_data: pd.Series, n: int = 10):
     '''
     #  % of 10-grams that occur more than once in each document (Cazier and Pfeiffer, 2015)
     '''
@@ -169,13 +169,13 @@ def Redundancy(cleaned_data: pd.Series, n: int = 10):
         raise
         
     # capture the 10-grams for each sentence for all the documents
-    ngram = [0]*len(cleaned_data)
-    for i in tqdm(range(len(cleaned_data)), desc = 'Get the Redundancy'):
+    ngram = [0]*len(input_data)
+    for i in tqdm(range(len(input_data)), desc = 'Get the Redundancy'):
         
-        ngram[i] = [0]*len(cleaned_data[i])
-        for j in range(len(cleaned_data[i])):
-            if cleaned_data[i] !='':
-                ngram[i][j] = list(nltk.ngrams(cleaned_data[i][j].split(),10))
+        ngram[i] = [0]*len(input_data[i])
+        for j in range(len(input_data[i])):
+            if input_data[i] !='':
+                ngram[i][j] = list(nltk.ngrams(input_data[i][j].split(),10))
     
     # get all 10-grams per document
     list_ngrams_per_doc = [list(chain(*ngram[i])) for i in range(len(ngram))]
@@ -191,7 +191,7 @@ def Redundancy(cleaned_data: pd.Series, n: int = 10):
 
 
 
-def Specificity(data: pd.Series):
+def Specificity(input_data: pd.Series):
     '''
     #### LOGIC (Hope et al., 2016):
     
@@ -205,10 +205,10 @@ def Specificity(data: pd.Series):
     
     ner = spacy.load('en_core_web_sm')
     
-    specificity = [0]*len(data)
+    specificity = [0]*len(input_data)
     
-    for i in tqdm(range(len(data)), desc = 'Get the Specificity'):
-        specificity[i] = len(ner(data[i]).ents)/len(data[i])
+    for i in tqdm(range(len(input_data)), desc = 'Get the Specificity'):
+        specificity[i] = len(ner(input_data[i]).ents)/len(input_data[i])
     
     #[len(ner(data[i]).ents)/len(data[i]) for i in tqdm(range(len(data)))]
     
@@ -217,7 +217,7 @@ def Specificity(data: pd.Series):
 
 
 
-def Relative_prevalence(data:pd.Series):
+def Relative_prevalence(input_data:pd.Series):
     
     ''' (Blankespoor, 2016)
     # relative prevalence of informative numbers in the text or “hard” information 
@@ -236,12 +236,12 @@ def Relative_prevalence(data:pd.Series):
 #             if ent.label_ == "GPE":
 #                 ents.append(ent)
     
-    relative_prevalence = [0]*len(data)
+    relative_prevalence = [0]*len(input_data)
     
-    for i in tqdm(range(len(data)), desc = 'Get the Relative_prevalence'):
+    for i in tqdm(range(len(input_data)), desc = 'Get the Relative_prevalence'):
         
-        a = len(data[i].split())
-        doc = ''.join([j for j in data[i] if not j.isdigit()])
+        a = len(input_data[i].split())
+        doc = ''.join([j for j in input_data[i] if not j.isdigit()])
         b = len(doc.split())
         relative_prevalence[i] = (a-b)/a
         

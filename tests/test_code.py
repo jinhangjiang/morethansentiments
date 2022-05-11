@@ -1,19 +1,21 @@
 import pandas as pd
 from IPython.display import display
-import morethansentiments as mts
+import MoreThanSentiments as mts
 my_dir_path = "E:/Package/Boilerplate/morethansentiments/Data/bbc/business"
 df = mts.read_txt_files(PATH = my_dir_path)
 
 
 
-temp_col = []
-for i in range(len(df)):
-    temp_col.append(mts.sent_tok(df.text[i]))
+df['sent_tok'] = df.text.apply(mts.sent_tok)
     
-for i in range(len(temp_col)):
-    temp_col[i] = [mts.clean_data(x, lower = True, punctuations=True, number=False, unicode=True, stop_words=None) for x in temp_col[i]]
-    
-df['cleaned_data'] = pd.Series(temp_col)    
+df['cleaned_data'] = pd.Series()    
+for i in range(len(df['sent_tok'])):
+    df['cleaned_data'][i] = [mts.clean_data(x,\
+                                            lower = True,\
+                                            punctuations=True,\
+                                            number=False,\
+                                            unicode=True,\
+                                            stop_words=None) for x in df['sent_tok'][i]] 
 
 
 
