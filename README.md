@@ -6,6 +6,8 @@ Besides sentiment scores, this Python package offers various ways of quantifying
 -   Specificity (Hope et al., 2016)
 -   Relative_prevalence (Blankespoor, 2016)
 
+A medium blog is here: [MoreThanSentiments: A Python Library for Text Quantification](https://towardsdatascience.com/morethansentiments-a-python-library-for-text-quantification-e57ff9d51cd5)
+
 ## Installation
 
 The easiest way to install the toolbox is via pip (pip3 in some
