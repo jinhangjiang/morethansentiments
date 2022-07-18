@@ -10,6 +10,10 @@ Besides sentiment scores, this Python package offers various ways of quantifying
 
 A medium blog is here: [MoreThanSentiments: A Python Library for Text Quantification](https://towardsdatascience.com/morethansentiments-a-python-library-for-text-quantification-e57ff9d51cd5)
 
+**If this work was helpful in your work, feel free to cite it as**
+
+- Jinhang Jiang, & Srinivasan, Karthik. (2022). MoreThanSentiments: Text Analysis Package. Zenodo. https://doi.org/10.5281/zenodo.6853352
+
 ## Installation
 
 The easiest way to install the toolbox is via pip (pip3 in some
