@@ -1,5 +1,6 @@
 [![DOI](https://zenodo.org/badge/490040941.svg)](https://zenodo.org/badge/latestdoi/490040941)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-orange.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![PyPI](https://img.shields.io/pypi/v/morethansentiments)](https://pypi.org/project/morethansentiments/)
 
 # MoreThanSentiments
 Besides sentiment scores, this Python package offers various ways of quantifying text corpus based on multiple works of literature. Currently, we support the calculation of the following measures:
