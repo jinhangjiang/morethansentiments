@@ -1,3 +1,7 @@
+[![DOI](https://zenodo.org/badge/490040941.svg)](https://zenodo.org/badge/latestdoi/490040941)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-green.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![PyPI](https://img.shields.io/pypi/v/morethansentiments)](https://pypi.org/project/morethansentiments/)
+
 # MoreThanSentiments
 Besides sentiment scores, this Python package offers various ways of quantifying text corpus based on multiple works of literature. Currently, we support the calculation of the following measures:
 
@@ -5,6 +9,14 @@ Besides sentiment scores, this Python package offers various ways of quantifying
 -   Redundancy (Cazier and Pfeiffer, 2015)
 -   Specificity (Hope et al., 2016)
 -   Relative_prevalence (Blankespoor, 2016)
+
+A medium blog is here: [MoreThanSentiments: A Python Library for Text Quantification](https://towardsdatascience.com/morethansentiments-a-python-library-for-text-quantification-e57ff9d51cd5)
+
+## Citation
+
+If this package was helpful in your work, feel free to cite it as
+
+- Jinhang Jiang, & Srinivasan, Karthik. (2022). MoreThanSentiments: Text Analysis Package. Zenodo. https://doi.org/10.5281/zenodo.6853352
 
 ## Installation
 
