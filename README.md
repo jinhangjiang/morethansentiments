@@ -55,12 +55,13 @@ For the data cleaning function, we offer the following options:
 
 #### Boilerplate
 
-    df['Boilerplate'] = mts.Boilerplate(sent_tok, n = 4, min_doc = 5)
+    df['Boilerplate'] = mts.Boilerplate(sent_tok, n = 4, min_doc = 5, get_ngram = False)
 
 Parameters:
 -   input_data: this function requires tokenized documents.
 -   n: number of the ngrams to use. The default is 4.
 -   min_doc: when building the ngram list, ignore the ngrams that have a document frequency strictly lower than the given threshold. The default is 5 document. 30% of the number of the documents is recommended.
+-   get_ngram: if this parameter is set to "True" it will return a datafram with all the ngrams and the corresponding frequency, and "min_doc" parameter will become ineffective.
 
 #### Redundancy
 

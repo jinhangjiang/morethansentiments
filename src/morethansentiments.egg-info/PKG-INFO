@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: MoreThanSentiments
-Version: 0.1.3
+Version: 0.2.0
 Summary: An NLP python package for computing Boilerplate score and many other text features.
 Home-page: https://github.com/jinhangjiang/morethansentiments
 Author: Jinhang Jiang, Karthik Srinivasan
@@ -63,12 +63,13 @@ Description: # MoreThanSentiments
         
         #### Boilerplate
         
-            df['Boilerplate'] = mts.Boilerplate(sent_tok, n = 4, min_doc = 5)
+            df['Boilerplate'] = mts.Boilerplate(sent_tok, n = 4, min_doc = 5, get_ngram = False)
         
         Parameters:
         -   input_data: this function requires tokenized documents.
         -   n: number of the ngrams to use. The default is 4.
         -   min_doc: when building the ngram list, ignore the ngrams that have a document frequency strictly lower than the given threshold. The default is 5 document. 30% of the number of the documents is recommended.
+        -   get_ngram: if this parameter is set to "True" it will return a datafram with all the ngrams and the corresponding frequency, and "min_doc" parameter will become ineffective.
         
         #### Redundancy
         
@@ -100,10 +101,16 @@ Description: # MoreThanSentiments
         
         # CHANGELOG
         
+        ## Version 0.2.0, 2022-10-2
+        
+        - Add the "get_ngram" feature to the Boilerplate function
+        - Add the percentage as a option for "min_doc" in Boilerpate, when the given value is between 0 and 1, it will automatically become a percentage for "min_doc"
+        - 
+        
         ## Version 0.1.3, 2022-06-10
         
         - Updated the usage guide
-        - Minor fix the to script
+        - Minor fix to the script
         
         
         ## Version 0.1.2, 2022-05-08

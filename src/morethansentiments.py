@@ -71,7 +71,7 @@ def sent_tok(doc:str):
     return nltk.sent_tokenize(doc)
 
 
-def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: int = 5):
+def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram: bool = False):
     '''
     #### LOGIC (Lang and Stice-Lawrence, 2015):
     
@@ -83,25 +83,28 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: int = 5):
         per document in the list (phrases commonly used in financial disclosures). Discard other tetragrams from the list. 
         
     # BOILERPLATE = % of total words in document that are in sentences containing boilerplate tetragrams. 
-    '''
-    try:
-        assert 3 <= n <= 6
-        
-    except AssertionError:
-        
-        "Invalid Value for n (int) [3,6]"
-        
-        raise
     
-    try:
+    # If get_ngram is set to True, it will return a dataframe with ngrams and corresponding frequency.
+    '''
+    
+    # Test 1: check ngram
+
+    assert 3 <= n <= 6, "Invalid Value for n (int) [3,6]"
         
-        assert 0 <= min_doc <= len(input_data)/2
+    # Test 2: check min_doc
+    if min_doc >= 1:
         
-    except AssertionError:
+        assert min_doc <= len(input_data)/2, "Invalid Value for min_doc (int), it cannot excess half of the total number of the documents"   
+    
+    if 0 < min_doc <1:
         
-        "Invalid Value for min_doc (int) [0, len(input_data)/2]"
+        assert min_doc <= 0.50, "Invalid Value for min_doc, it cannot excess half of the total number of the documents"
         
-        raise
+        min_doc = round((min_doc*len(input_data)))
+        
+    else:
+        
+        assert min_doc > 0, "Invalid Value for min_doc."
         
     # capture the 4-grams for each sentence for all the documents
     ngram = [0]*len(input_data)
@@ -116,41 +119,48 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: int = 5):
     list_all_ngrams = list(chain(*[set(list(chain(*ngram[i]))) for i in range(len(ngram))]))
     
     
-    # remove the 4-grams that appeared in less than 5 documents [CHECKHERE, percentage is not included]
-    fndf = pd.DataFrame(pd.DataFrame({'Ngrams':list_all_ngrams}).\
+    # generate a dataframe with all the n-grams and corresponding frequency
+    fndf_all = pd.DataFrame(pd.DataFrame({'Ngrams':list_all_ngrams}).\
                      value_counts().\
                      rename_axis('unique_ngrams').\
-                     reset_index(name='counts').\
-                     query(f'counts >= {min_doc}'))
-
-    # NWoS, calculate the number of the words in each sentence per document, and store them
-    temp_nwos = [0]*len(input_data)
-    for i in tqdm(range(len(temp_nwos)), desc = "Get the Length of Sentence"):
-        temp_nwos[i] = [len(j.split()) for j in input_data[i]]    
+                     reset_index(name='counts'))
     
-    # Flag the sentence
-    sent_flag = [[]]*len(input_data)
-    for i in tqdm(range(len(sent_flag)), desc = 'Flag the Sentence'):
-
-        sent_flag[i] = [0]*len(ngram[i])
-
-        for j in range(len(ngram[i])):
-
-            if any(x in ngram[i][j] for x in fndf.unique_ngrams):
-
-                sent_flag[i][j] = temp_nwos[i][j]
-
-            else:
-
-                sent_flag[i][j] = 0    
+    if get_ngram == True:
+        
+        return fndf_all
     
-    #Final Calculation of Boilerplate
-    display("======================== Boilerplate Calculation Started =========================")
-    boilerplate = [sum(sent_flag[i])/sum(temp_nwos[i]) for i in range(len(input_data))]
-    display("======================== Boilerplate Calculation Finished ========================")
-    
-    return boilerplate
+    else:
+        # Remove tetragrams that occur more than 75% and less than the specified min_doc across documents
+        upper_limit = 0.75 * len(input_data)
+        fndf = fndf_all.query(f'counts >= {min_doc} and counts <= {upper_limit}')
 
+        # NWoS, calculate the number of the words in each sentence per document, and store them
+        temp_nwos = [0]*len(input_data)
+        for i in tqdm(range(len(temp_nwos)), desc = "Get the Length of Sentence"):
+            temp_nwos[i] = [len(j.split()) for j in input_data[i]]    
+
+        # Flag the sentence
+        sent_flag = [[]]*len(input_data)
+        for i in tqdm(range(len(sent_flag)), desc = 'Flag the Sentence'):
+
+            sent_flag[i] = [0]*len(ngram[i])
+
+            for j in range(len(ngram[i])):
+
+                if any(x in ngram[i][j] for x in fndf.unique_ngrams):
+
+                    sent_flag[i][j] = temp_nwos[i][j]
+
+                else:
+
+                    sent_flag[i][j] = 0    
+
+        #Final Calculation of Boilerplate
+        display("======================== Boilerplate Calculation Started =========================")
+        boilerplate = [sum(sent_flag[i])/sum(temp_nwos[i]) for i in range(len(input_data))]
+        display("======================== Boilerplate Calculation Finished ========================")
+
+        return boilerplate
 
 
 
@@ -159,15 +169,9 @@ def Redundancy(input_data: pd.Series, n: int = 10):
     '''
     #  % of 10-grams that occur more than once in each document (Cazier and Pfeiffer, 2015)
     '''
-    try:
-        assert 5 <= n <= 15
-        
-    except AssertionError:
-        
-        "Invalid Value for n (int) [5,15]"
-        
-        raise
-        
+
+    assert 5 <= n <= 15, "Invalid Value for n (int) [5,15]"    
+    
     # capture the 10-grams for each sentence for all the documents
     ngram = [0]*len(input_data)
     for i in tqdm(range(len(input_data)), desc = 'Get the Redundancy'):
