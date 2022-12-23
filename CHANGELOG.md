@@ -1,9 +1,12 @@
 # CHANGELOG
+## Version 0.2.1, 2022-12-22
+- Fixed the counting bug in Specificity 
+- Added max_doc parameter to Boilerplate
 
 ## Version 0.2.0, 2022-10-2
 
-- Add the "get_ngram" feature to the Boilerplate function
-- Add the percentage as a option for "min_doc" in Boilerpate, when the given value is between 0 and 1, it will automatically become a percentage for "min_doc"
+- Added the "get_ngram" feature to the Boilerplate function
+- Added the percentage as a option for "min_doc" in Boilerpate, when the given value is between 0 and 1, it will automatically become a percentage for "min_doc"
 
 ## Version 0.1.3, 2022-06-10
 

@@ -17,7 +17,7 @@ A medium blog is here: [MoreThanSentiments: A Python Library for Text Quantifica
 
 If this package was helpful in your work, feel free to cite it as
 
-- Jinhang Jiang, & Srinivasan, Karthik. (2022). MoreThanSentiments: Text Analysis Package. Zenodo. https://doi.org/10.5281/zenodo.6853352
+- Jiang, J., & Srinivasan, K. (2022). MoreThanSentiments: A text analysis package. Software Impacts, 100456. https://doi.org/10.1016/J.SIMPA.2022.100456
 
 ## Installation
 
@@ -75,6 +75,7 @@ Parameters:
 -   n: number of the ngrams to use. The default is 4.
 -   min_doc: when building the ngram list, ignore the ngrams that have a document frequency strictly lower than the given threshold. The default is 5 document. 30% of the number of the documents is recommended.
 -   get_ngram: if this parameter is set to "True" it will return a datafram with all the ngrams and the corresponding frequency, and "min_doc" parameter will become ineffective.
+-   max_doc: when building the ngram list, ignore the ngrams that have a document frequency strictly lower than the given threshold. The default is 75% of document. It can be percentage or integer.
 
 #### Redundancy
 

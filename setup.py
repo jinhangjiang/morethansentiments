@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name = 'MoreThanSentiments',
-    version = '0.2.0',
+    version = '0.2.1',
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
     py_modules = ["MoreThanSentiments"],
     package_dir = {'':'src'},
