@@ -35,10 +35,10 @@ setup(
     ],
     
     install_requires = [
-        'tqdm ~= 4.59.0',
-        'spacy ~= 3.3.0',
-        'pandas ~= 1.2.4',
-        'nltk ~= 3.6.1',
+        'tqdm >= 4.59.0',
+        'spacy >= 3.3.0',
+        'pandas >= 1.2.4',
+        'nltk >= 3.6.1',
     ],
     
     keywords = ['Text Mining', 'Data Science', 'Natural Language Processing', 'Accounting'],
