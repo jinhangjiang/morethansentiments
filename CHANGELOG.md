@@ -1,4 +1,8 @@
 # CHANGELOG
+## Version 0.3.0 2025-01-31
+- Fixed the parameter misplace issue in Redudancy.
+- Fully upgraded the algorithm and refactored the code base. 40% - 50% speed boost on large datasets.
+
 ## Version 0.2.1, 2022-12-22
 - Fixed the counting bug in Specificity 
 - Added max_doc parameter to Boilerplate
