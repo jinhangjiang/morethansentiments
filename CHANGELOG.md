@@ -1,4 +1,8 @@
 # CHANGELOG
+## Version 0.3.1 2025-01-31
+- Fixed source distribution filenames to comply with PEP 625.
+- Minor optimization added.
+
 ## Version 0.3.0 2025-01-31
 - Fixed the parameter misplace issue in Redudancy.
 - Fully upgraded the algorithm and refactored the code base. 40% - 50% speed boost on large datasets.

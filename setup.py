@@ -3,12 +3,12 @@ from setuptools import setup
 
 
 setup(
-    name = 'MoreThanSentiments',
-    version = '0.3.0',
+    name = 'morethansentiments',
+    version = '0.3.1',
     description = 'An NLP python package for computing Boilerplate score and many other text features.',
-    py_modules = ["MoreThanSentiments"],
+    py_modules = ["morethansentiments"],
     package_dir = {'':'src'},
-#     package = ['MoreThanSentiments'],
+#     package = ['morethansentiments'],
     author = 'Jinhang Jiang, Karthik Srinivasan',
     author_email = 'jinhang@asu.edu',
     long_description = open('README.md').read() + '\n\n' + open('CHANGELOG.md').read(),
