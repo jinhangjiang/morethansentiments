@@ -71,7 +71,7 @@ def sent_tok(doc:str):
     return nltk.sent_tokenize(doc)
 
 
-def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram: bool = False):
+def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram: bool = False, **kwargs):
     '''
     #### LOGIC (Lang and Stice-Lawrence, 2015):
     
@@ -87,6 +87,7 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram
     # If get_ngram is set to True, it will return a dataframe with ngrams and corresponding frequency.
     '''
     
+    doc_length = len(input_data)
     # Test 1: check ngram
 
     assert 3 <= n <= 6, "Invalid Value for n (int) [3,6]"
@@ -94,21 +95,40 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram
     # Test 2: check min_doc
     if min_doc >= 1:
         
-        assert min_doc <= len(input_data)/2, "Invalid Value for min_doc (int), it cannot excess half of the total number of the documents"   
+        assert min_doc <= doc_length/2, "Invalid Value for min_doc (int), it cannot excess half of the total number of the documents"   
     
     if 0 < min_doc <1:
         
         assert min_doc <= 0.50, "Invalid Value for min_doc, it cannot excess half of the total number of the documents"
         
-        min_doc = round((min_doc*len(input_data)))
+        min_doc = round((min_doc*doc_length))
         
     else:
         
         assert min_doc > 0, "Invalid Value for min_doc."
+    
+    # Test 3: check upper limit ratio
+    max_doc = kwargs.get("max_doc", 0.75)
+
+    if max_doc >= 1:
         
+        assert max_doc >= doc_length*0.5, "Invalid Value for max_doc (int), it cannot be less than half of the total number of the documents"   
+        upper_ratio = round(max_doc/doc_length)
+
+    if 0 < max_doc <1:
+        
+        assert max_doc >= 0.50, "Invalid Value for max_doc, the ratio cannot be less than 0.5"
+        
+    else:
+        
+        assert max_doc > 0, "Invalid Value for min_doc."    
+    
+    # update the upper_ratio
+    upper_ratio = max_doc
+
     # capture the 4-grams for each sentence for all the documents
-    ngram = [0]*len(input_data)
-    for i in tqdm(range(len(input_data)), desc = 'Get the Boilerplate'):
+    ngram = [0]*doc_length
+    for i in tqdm(range(doc_length), desc = 'Get the Boilerplate'):
         
         ngram[i] = [0]*len(input_data[i])
         for j in range(len(input_data[i])):
@@ -131,16 +151,16 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram
     
     else:
         # Remove tetragrams that occur more than 75% and less than the specified min_doc across documents
-        upper_limit = 0.75 * len(input_data)
+        upper_limit = upper_ratio * doc_length
         fndf = fndf_all.query(f'counts >= {min_doc} and counts <= {upper_limit}')
 
         # NWoS, calculate the number of the words in each sentence per document, and store them
-        temp_nwos = [0]*len(input_data)
+        temp_nwos = [0]*doc_length
         for i in tqdm(range(len(temp_nwos)), desc = "Get the Length of Sentence"):
             temp_nwos[i] = [len(j.split()) for j in input_data[i]]    
 
         # Flag the sentence
-        sent_flag = [[]]*len(input_data)
+        sent_flag = [[]]*doc_length
         for i in tqdm(range(len(sent_flag)), desc = 'Flag the Sentence'):
 
             sent_flag[i] = [0]*len(ngram[i])
@@ -157,7 +177,7 @@ def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, get_ngram
 
         #Final Calculation of Boilerplate
         display("======================== Boilerplate Calculation Started =========================")
-        boilerplate = [sum(sent_flag[i])/sum(temp_nwos[i]) for i in range(len(input_data))]
+        boilerplate = [sum(sent_flag[i])/sum(temp_nwos[i]) for i in range(doc_length)]
         display("======================== Boilerplate Calculation Finished ========================")
 
         return boilerplate
@@ -170,11 +190,12 @@ def Redundancy(input_data: pd.Series, n: int = 10):
     #  % of 10-grams that occur more than once in each document (Cazier and Pfeiffer, 2015)
     '''
 
+    doc_length = len(input_data)
     assert 5 <= n <= 15, "Invalid Value for n (int) [5,15]"    
     
-    # capture the 10-grams for each sentence for all the documents
-    ngram = [0]*len(input_data)
-    for i in tqdm(range(len(input_data)), desc = 'Get the Redundancy'):
+     # capture the 10-grams for each sentence for all the documents
+    ngram = [0]*doc_length
+    for i in tqdm(range(doc_length), desc = 'Get the Redundancy'):
         
         ngram[i] = [0]*len(input_data[i])
         for j in range(len(input_data[i])):
@@ -206,15 +227,15 @@ def Specificity(input_data: pd.Series):
     # All scaled by the total number of words in document.
     '''
     
+    doc_length = len(input_data)
     
     ner = spacy.load('en_core_web_sm')
     
-    specificity = [0]*len(input_data)
+    specificity = [0]*doc_length
     
-    for i in tqdm(range(len(input_data)), desc = 'Get the Specificity'):
-        specificity[i] = len(ner(input_data[i]).ents)/len(input_data[i])
+    for i in tqdm(range(doc_length), desc = 'Get the Specificity'):
+        specificity[i] = len(ner(input_data[i]).ents)/len(input_data[i].split())
     
-    #[len(ner(data[i]).ents)/len(data[i]) for i in tqdm(range(len(data)))]
     
     return specificity
 
@@ -240,9 +261,11 @@ def Relative_prevalence(input_data:pd.Series):
 #             if ent.label_ == "GPE":
 #                 ents.append(ent)
     
-    relative_prevalence = [0]*len(input_data)
+    doc_length = len(input_data)
+
+    relative_prevalence = [0]*doc_length
     
-    for i in tqdm(range(len(input_data)), desc = 'Get the Relative_prevalence'):
+    for i in tqdm(range(doc_length), desc = 'Get the Relative_prevalence'):
         
         a = len(input_data[i].split())
         doc = ''.join([j for j in input_data[i] if not j.isdigit()])
