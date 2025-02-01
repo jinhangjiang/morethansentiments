@@ -107,93 +107,119 @@ def sent_tok(doc: str) -> list:
 
 
 ### 📌 BOILERPLATE DETECTION ###
-def Boilerplate(
-    input_data: pd.Series,
-    n: int = 4,
-    min_doc: float = 5,
-    max_doc: float = 0.75,
-    get_ngram: bool = False,
-) -> pd.DataFrame or list:
+def Boilerplate(input_data: pd.Series, n: int = 4, min_doc: float = 5, max_doc: float = 0.75, get_ngram: bool = False):
     """
-    Detects boilerplate text using n-grams.
+    Computes the boilerplate percentage in a document based on repeated n-grams.
 
     Parameters:
-    - input_data (pd.Series): Series containing text documents.
-    - n (int): N-gram size (default: 4).
-    - min_doc (float): Minimum document frequency threshold (default: 5).
-    - max_doc (float): Maximum document frequency ratio (default: 0.75).
-    - get_ngram (bool): If True, returns a DataFrame of n-grams and their counts.
+    - input_data (pd.Series): A Pandas Series where each element is a document (string).
+    - n (int): The n-gram length (default=4).
+    - min_doc (float): Minimum document occurrence for an n-gram to be considered (default=5).
+    - max_doc (float): Maximum fraction of documents an n-gram can appear in (default=0.75).
+    - get_ngram (bool): If True, returns the extracted n-grams and their counts instead of the boilerplate score.
 
     Returns:
-    - list or pd.DataFrame: Boilerplate scores or n-gram frequency DataFrame.
+    - If get_ngram=True: Returns a DataFrame with n-grams and their counts.
+    - Otherwise: Returns a list containing the boilerplate score for each document.
     """
+
+    # Ensure input_data is a Pandas Series
+    if not isinstance(input_data, pd.Series):
+        raise TypeError("input_data must be a Pandas Series.")
+
+    # Convert all documents to strings (handle NaNs, numbers, etc.)
+    input_data = input_data.astype(str).fillna("")
+
     doc_length = len(input_data)
 
-    assert 3 <= n <= 6, "Invalid n. Must be between 3 and 6."
-    assert 0 < min_doc <= 0.5 * doc_length, "Invalid min_doc value."
-    assert 0 < max_doc <= 1, "Invalid max_doc value."
+    # Validate n-gram range
+    assert 3 <= n <= 6, "Invalid value for n. Must be between 3 and 6."
 
-    if min_doc < 1:
-        min_doc = round(min_doc * doc_length)
+    # Validate min_doc
+    if 0 < min_doc < 1:
+        min_doc = round(min_doc * doc_length)  # Convert percentage to count
+    assert min_doc > 0, "min_doc must be greater than 0."
+    
+    # Validate max_doc
+    if 0 < max_doc < 1:
+        max_doc = round(max_doc * doc_length)
+    assert 0 < max_doc <= doc_length, "max_doc must be between 0 and the total number of documents."
 
-    # Extract n-grams for each sentence
-    ngram_list = [
-        [list(nltk.ngrams(sent.split(), n)) for sent in sent_tok(doc)]
-        for doc in tqdm(input_data, desc="Extracting n-grams")
-    ]
+    # Extract n-grams per document
+    ngram_list = []
+    document_ngrams = []
+    for doc in tqdm(input_data, desc="Extracting n-grams"):
+        doc_ngrams = []
+        for sent in nltk.sent_tokenize(doc):  # Sentence tokenize first
+            sent_ngrams = list(nltk.ngrams(sent.split(), n))  # Generate n-grams
+            doc_ngrams.extend(sent_ngrams)  # Store n-grams per document
+        document_ngrams.append(doc_ngrams)
+        ngram_list.extend(doc_ngrams)  # Flatten for global count
 
-    # Flatten list and create frequency DataFrame
-    all_ngrams = list(chain.from_iterable(chain.from_iterable(ngram_list)))
-    ngram_freq = pd.DataFrame(pd.Series(all_ngrams).value_counts()).reset_index()
-    ngram_freq.columns = ["ngram", "count"]
+    # Count frequency of unique n-grams
+    ngram_counts = pd.Series(ngram_list).value_counts().reset_index(name='counts')
+    ngram_counts.columns = ['Ngrams', 'counts']
 
     if get_ngram:
-        return ngram_freq
+        return ngram_counts  # Return n-gram frequency table
 
-    # Remove overly common and rare n-grams
-    ngram_freq = ngram_freq[
-        (ngram_freq["count"] >= min_doc) & (ngram_freq["count"] <= max_doc * doc_length)
-    ]
+    # Filter n-grams based on min_doc and max_doc thresholds
+    valid_ngrams = set(ngram_counts.query(f'counts >= {min_doc} and counts <= {max_doc}')['Ngrams'])
 
-    # Compute boilerplate ratio
+    # Compute boilerplate score
     boilerplate_scores = []
-    for i, doc in enumerate(input_data):
-        words = doc.split()
-        flagged_words = sum(
-            len(sent.split())
-            for sent in sent_tok(doc)
-            if any(ngram in ngram_freq["ngram"].values for ngram in list(nltk.ngrams(sent.split(), n)))
-        )
-        boilerplate_scores.append(flagged_words / len(words) if words else 0)
+    for doc_ngrams, doc in tqdm(zip(document_ngrams, input_data), total=len(input_data), desc="Computing Boilerplate Score"):
+        words_in_doc = len(doc.split())  # Total words in document
+        flagged_words = sum(len(ng) for ng in doc_ngrams if ng in valid_ngrams)
+        boilerplate_scores.append(flagged_words / words_in_doc if words_in_doc > 0 else 0)
 
     return boilerplate_scores
 
 
-### 📌 TEXT REDUNDANCY ###
-def Redundancy(input_data: pd.Series, n: int = 10) -> list:
+def Redundancy(input_data: pd.Series, n: int = 10):
     """
-    Calculates text redundancy as the percentage of repeating n-grams.
+    Computes redundancy in a document based on repeated n-grams.
 
     Parameters:
-    - input_data (pd.Series): Series containing text documents.
-    - n (int): N-gram size (default: 10).
+    - input_data (pd.Series): A Pandas Series where each element is a document (string).
+    - n (int): The n-gram length (default=10).
 
     Returns:
-    - list: Redundancy scores per document.
+    - List of redundancy scores per document.
     """
-    assert 5 <= n <= 15, "n should be between 5 and 15."
 
-    # Extract n-grams
-    ngram_list = [
-        list(nltk.ngrams(doc.split(), n)) for doc in tqdm(input_data, desc="Extracting n-grams")
-    ]
+    # Ensure input_data is a Pandas Series
+    if not isinstance(input_data, pd.Series):
+        raise TypeError("input_data must be a Pandas Series.")
 
-    # Compute redundancy
-    redundancy_scores = [
-        sum(pd.Series(ngrams).value_counts().loc[lambda x: x > 1].sum() / len(ngrams))
-        if len(ngrams) > 0 else 0
-        for ngrams in ngram_list
-    ]
+    # Convert all documents to strings (handle NaNs, lists, numbers, etc.)
+    input_data = input_data.astype(str).fillna("")
+
+    doc_length = len(input_data)
+
+    # Validate n-gram range
+    assert 5 <= n <= 15, "Invalid value for n. Must be between 5 and 15."
+
+    redundancy_scores = []
+    
+    # Extract n-grams and compute redundancy
+    for doc in tqdm(input_data, desc="Extracting n-grams"):
+        # Extract n-grams for the document
+        ngram_list = list(nltk.ngrams(doc.split(), n))
+        
+        if not ngram_list:  # Handle empty documents
+            redundancy_scores.append(0)
+            continue
+
+        # Count n-gram occurrences
+        ngram_counts = pd.Series(ngram_list).value_counts()
+
+        # Compute redundancy as % of n-grams that occur more than once
+        repeated_ngrams = ngram_counts[ngram_counts > 1].sum()
+        total_ngrams = len(ngram_list)
+        
+        redundancy_scores.append(repeated_ngrams / total_ngrams if total_ngrams > 0 else 0)
+
     return redundancy_scores
 
 
