@@ -46,14 +46,14 @@ distributions):
 
 If you want to clean on the sentence level:
 
-    df['cleaned_data'] = pd.Series()    
+    df['cleaned_data'] = pd.Series()
     for i in range(len(df['sent_tok'])):
         df['cleaned_data'][i] = [mts.clean_data(x,\
                                                 lower = True,\
-                                                punctuations = True,\
-                                                number = False,\
-                                                unicode = True,\
-                                                stop_words = False) for x in df['sent_tok'][i]] 
+                                                remove_punct=True,\
+                                                remove_numbers=False,\
+                                                remove_unicode=True,\
+                                                remove_stopwords=False) for x in df['sent_tok'][i]]
                                                 
 If you want to clean on the document level:
 
@@ -61,14 +61,14 @@ If you want to clean on the document level:
 
 For the data cleaning function, we offer the following options:
 -   lower: make all the words to lowercase
--   punctuations: remove all the punctuations in the corpus
--   number: remove all the digits in the corpus
--   unicode: remove all the unicodes in the corpus
--   stop_words: remove the stopwords in the corpus
+-   remove_punct: remove all the punctuations in the corpus
+-   remove_numbers: remove all the digits in the corpus
+-   remove_unicode: remove all the unicodes in the corpus
+-   remove_stopwords: remove the stopwords in the corpus
 
 #### Boilerplate
 
-    df['Boilerplate'] = mts.Boilerplate(sent_tok, n = 4, min_doc = 5, get_ngram = False)
+    df['Boilerplate'] = mts.Boilerplate(df.cleaned_data, n = 4, min_doc = 5, get_ngram = False)
 
 Parameters:
 -   input_data: this function requires tokenized documents.
