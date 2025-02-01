@@ -1,28 +1,3 @@
 [build-system]
 requires = ["setuptools>=42.0", "wheel", "tqdm >= 4.59.0", "spacy >= 3.3.0", "pandas ~= 1.2.4", "nltk >= 3.6.1"]
 build-backend = "setuptools.build_meta"
-
-[tool.ruff]
-target-version = "py38"
-line-length = 88
-# Enable Pyflakes `E` and `F` codes by default.
-lint.select = [
-#    "E",
-#    "W", # see: https://pypi.org/project/pycodestyle
-    "F", # see: https://pypi.org/project/pyflakes
-#    "I", #see: https://pypi.org/project/isort/
-#    "D", # see: https://pypi.org/project/pydocstyle
-#    "N", # see: https://pypi.org/project/pep8-naming
-#    "S", # see: https://pypi.org/project/flake8-bandit
-]
-
-
-[tool.mypy]
-ignore_missing_imports = true
-
-[tool.poetry.dependencies]
-python = "^3.8"
-requests = "^2.25.1"
-
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.2"
